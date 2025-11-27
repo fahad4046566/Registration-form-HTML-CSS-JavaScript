@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            /* background: linear-gradient(135deg, #2941ad 0%, #36489b 100%); */
+            background-image: url(photos/form\ background.jpeg);
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-image: url(photos/form\ cover.jpeg);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(219, 216, 216, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+          color: rgb(9, 9, 58);
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgb(8, 8, 46);
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgb(110, 75, 8);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #394870;
+        }
+        ::placeholder{
+            color: rgb(219, 222, 231);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(4, 6, 14, 0.1);
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #262f55 0%, #616025 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .success-message {
+            /* background: red; */
+            color: white;
+            padding: 15px;
+            /* border-radius: 8px; */
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            height: 4px;
+            border-radius: 2px;
+            background: white;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+        }
+     
+      .last-group {
+    display: flex;
+    align-items: center; /* Vertical align */
+    position: relative; /* Toggle position ke liye */
+    position: relative;
+    width: 100% ;
+}
+
+.toggle-password {
+     position: absolute;
+            right: 12px; /* Input ke andar right side */
+            top: 50%;
+            transform: translateY(-50%); /* Perfectly centered */
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 20px;
+            padding: 5px;
+            margin: 0;
+            color: white;
+            z-index: 10; /* Input ke upar hona chahiye */
+}
+
+/* Input field ko adjust karo */
+#password {
+    padding: 12px 15px; /* Toggle ke liye space */
+    width: 100%; /* Full width */
+    padding-right: 45px; /* Toggle ke liye space */
+            border: 2px solid rgb(110, 75, 8);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #394870;
+}
+  
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>Create Account</h1>
+        </div>
+        
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name">
+                <div class="error" id="nameError">Please enter your name</div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email">
+                <div class="error" id="emailError">Please enter a valid email</div>
+            </div>
+
+            <div class="form-group last" >
+                <label for="password">Password</label>
+                <div class="last-group">
+                <input type="password" id="password" placeholder="Create a password" >
+                
+                 <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+                  </div>
+                <div class="password-strength">
+                     <div class="strength-bar" id="passwordStrength"></div>
+                    
+                </div>
+                <div class="error" id="passwordError">Password must be at least 8 characters with uppercase, lowercase, number and special character</div>
+            </div>
+
+            <button type="submit" id="submit" class="submit-btn">Create Account</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            ✅ Registration Successful!
+        </div>
+    </div>
+
+    <script>
+   const name = document.getElementById("fullName") //only let se const kia
+   const email =  document.getElementById("email") //only let se const kia
+   const password =  document.getElementById("password") //only let se const kia
+   const submit =  document.getElementById("submit") //only let se const kia
+//    console.log(name , email , password , submit)
+const togglePassword = document.getElementById("togglePassword")
+let nameError = document.getElementById("nameError")
+let emailError = document.getElementById("emailError")
+let passwordError = document.getElementById("passwordError")
+let submitSuccess = document.getElementById("successMessage")
+
+const checkfunc = (inputElement , errorElement) => {     // function ko modify kia aik aur parameter error wala add kia
+    let extract = inputElement.value
+    let trimedInput = extract.trim();
+    if(trimedInput === "") {  // ✅ Empty check sahi tareeke se
+        // nameError.style.display = "block"; 
+        //  emailError.style.display = "block";
+        //   passwordError.style.display = "block";
+
+        // inteeno kee jagah aik he parameter se block kar liya 
+
+           errorElement.style.display = "block"; 
+
+        console.log("you submit nothing");
+        return false;
+    } else {
+        errorElement.style.display = "none"; // yaahn bhi errorElement use kia insted of other elemnent
+        console.log("you entered something");
+        return true;
+    }
+}
+// Logic: String mein @ hona chahiye aur pehle character nahi hona chahiye
+const validateEmail = (emailElement, errorElement) => {
+    const email = emailElement.value; // ✅ VALUE LENA BOHOT ZAROORI HAI
+    
+    // Logic: String mein @ hona chahiye aur pehle character nahi hona chahiye
+    if (!email.includes('@') || email.indexOf('@') === 0) {
+       errorElement.textContent = "Email must contain @ symbol";
+        errorElement.style.display = "block";
+        return false;
+    }
+
+    // Logic: @ ke baad kuch hona chahiye
+    const parts = email.split('@');
+    if (parts.length !== 2 || parts[1].length === 0) {
+        errorElement.textContent = "Email must contain something after @ symbol";
+        errorElement.style.display = "block";
+        return false;
+    }
+
+    // Logic: Domain part mein dot hona chahiye
+    const domain = parts[1];
+    if (!domain.includes('.') || domain.indexOf('.') === 0) {
+       errorElement.textContent = "Email must be included . symbol";
+        errorElement.style.display = "block";
+        return false;
+    }
+
+    // Logic: Email mein spaces nahi hone chahiye
+    if (email.includes(' ')) {
+       errorElement.textContent = "Email must not be spaces";
+        errorElement.style.display = "block";
+        return false;
+    }
+
+    return true; // ✅ Sab checks pass
+}
+// Password strength bar update
+const updatePasswordStrength = () => {
+    const passwordVal = password.value;
+    const strengthBar = document.getElementById("passwordStrength");
+    let strength = 0;
+    
+    if (passwordVal.length >= 8) strength += 25;
+    if (/[A-Z]/.test(passwordVal)) strength += 25;
+    if (/[0-9]/.test(passwordVal)) strength += 25;
+    if (/[!@#$%^&*]/.test(passwordVal)) strength += 25;
+    
+    strengthBar.style.width = strength + "%";
+    strengthBar.style.background = strength < 50 ? "#e74c3c" : strength < 75 ? "#f39c12" : "#2ecc71";
+}
+// Toggle password visibility
+togglePassword.addEventListener("click", () => {
+    if (password.type === "password") {
+        password.type = "text";
+        togglePassword.textContent = "🙈";
+    } else {
+        password.type = "password";
+        togglePassword.textContent = "👁️";
+    }
+})
+password.addEventListener("input", updatePasswordStrength);
+// ye teeeno cheezein ai se lay kar samjhein
+const validatePassword = (passwordElement, errorElement) => {
+    const password = passwordElement.value;
+    
+    // Har rule ko alag check karo
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*]/.test(password);
+    const hasMinLength = password.length >= 8;
+    
+    // Sab conditions check karo
+    if (!hasMinLength || !hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
+        errorElement.textContent = "Password must have 8+ chars, uppercase, lowercase, number & special character";
+        errorElement.style.display = "block";
+        return false;
+    }
+    
+    errorElement.style.display = "none";
+    return true;
+}
+
+ const submitbtn =(e) =>{
+  e.preventDefault();   
+  const isNameValid = checkfunc(name, nameError);
+  const isEmailValid = checkfunc(email,emailError) && validateEmail(email, emailError);
+  const isPasswordValid = checkfunc(password, passwordError) && validatePassword(password, passwordError);
+  if( isNameValid && isEmailValid && isPasswordValid){
+    submitSuccess.style.display = "block"
+      console.log("Form successfully submitted!");
+       setTimeout(() => {
+            location.reload();
+        }, 2000);
+    }
+    
+    return false;
+  }
+    
+    console.log("Form submitted")
+ 
+
+   submit.addEventListener("click" , submitbtn)
+
+
+
+
+    </script>
+</body>
+</html>
